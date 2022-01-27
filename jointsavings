@@ -1,0 +1,42 @@
+pragma solidity ^0.5.0;
+
+
+contract JointSavings {
+
+    address payable accountOne = 0x6575D08Ad018Ad10E1d1fee442Ba78EeC4984Bb8;
+    address payable accountTwo = 0xf61E805E53835a7C0e9D5E6e4d2fd28DFb5b733f;
+    uint public Contractbalance;
+
+    address public lastToWithdraw;
+    uint public lastWithdrawAmount;
+
+
+    
+    function withdraw(uint amount, address payable recipient) public {
+
+        require(recipient == accountOne || recipient == accountTwo, "You don't own this account");
+        require(amount <= Contractbalance, "Insufficient funds!");
+        if (lastToWithdraw != recipient) {
+        lastToWithdraw = recipient;
+
+        recipient.transfer(amount);
+        lastWithdrawAmount = amount;
+        Contractbalance = address(this).balance;
+        }
+        
+    }
+    function deposit() public payable {
+
+        Contractbalance = address(this).balance;
+
+    }
+
+    function setAccounts(address payable account1, address payable account2) public {
+
+        accountOne = account1;
+        accountTwo = account2;
+    }
+
+    function() external payable {}
+
+}   
